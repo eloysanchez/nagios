@@ -5,6 +5,7 @@ plugins_version="2.4.3"
 
 # Prerrequisitos y dependencias
 preRequisitos (){
+  export PATH=$PATH:/usr/sbin     
   apt-get update
   apt-get install -y autoconf gcc libc6 make wget unzip apache2 apache2-utils php libgd-dev openssl libssl-dev
 }
