@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Descargar en terminal, permisos y ejecutar
+# cd /tmp && wget https://raw.githubusercontent.com/eloysanchez/nagios/main/instalar-nagios.sh && chmod +x instalar-nagios.sh && ./instalar-nagios.sh
+
 nagios_version="4.4.10"
 plugins_version="2.4.3"
 
@@ -43,6 +46,21 @@ instalarNagios (){
   systemctl start nagios.service
 }
 
+instalarPlugins (){
+  # Prerequisitos y dependencias
+  apt-get install -y autoconf gcc libc6 libmcrypt-dev make libssl-dev wget bc gawk dc build-essential snmp libnet-snmp-perl gettext
+  # Descargar
+  cd /tmp
+  wget --no-check-certificate -O nagios-plugins.tar.gz https://github.com/nagios-plugins/nagios-plugins/archive/release-$plugins_version.tar.gz
+  tar zxf nagios-plugins.tar.gz
+  # Compilar e instalar
+  cd /tmp/nagios-plugins-release-$plugins_version/
+  ./tools/setup
+  ./configure
+  make
+  make install
+}
+
 preRequisitos
 instalarNagios
-
+instalarPlugins
