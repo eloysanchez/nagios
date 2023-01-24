@@ -5,6 +5,8 @@
 
 nagios_version="4.4.10"
 plugins_version="2.4.3"
+# nagiosadmin_passwd=$(< /dev/urandom tr -dc _A-Z-a-z-0-9 | head -c12)
+nagiosadmin_passwd="changeme"
 
 # Prerrequisitos y dependencias
 preRequisitos (){
@@ -39,7 +41,7 @@ instalarNagios (){
   a2enmod rewrite
   a2enmod cgi
   #Crear cuenta nagiosadmin
-  htpasswd -c /usr/local/nagios/etc/htpasswd.users nagiosadmin
+  htpasswd -bc /usr/local/nagios/etc/htpasswd.users nagiosadmin ${nagiosadmin_passwd}
   #Reiniciar Apache
   systemctl restart apache2.service
   #Iniciar servicio
@@ -64,3 +66,6 @@ instalarPlugins (){
 preRequisitos
 instalarNagios
 instalarPlugins
+
+# Mostrar contraseña nagiosadmin
+echo "La contraseña para nagiosadmin es: ${nagiosadmin_passwd}"
