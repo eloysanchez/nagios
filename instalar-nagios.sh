@@ -113,11 +113,11 @@ EOF
   cp /usr/local/nagios/etc/objects/commands.cfg /usr/local/nagios/etc/objects/commands.cfg.bak
   cat << 'EOF' > commands_file.txt
 # Bulk with NPCD mode
-#define command {
+define command {
        command_name    process-service-perfdata-file
        command_line    /bin/mv /usr/local/pnp4nagios/var/service-perfdata /usr/local/pnp4nagios/var/spool/service-perfdata.$TIMET$
 }
-#define command {
+define command {
        command_name    process-host-perfdata-file
        command_line    /bin/mv /usr/local/pnp4nagios/var/host-perfdata /usr/local/pnp4nagios/var/spool/host-perfdata.$TIMET$
 }
