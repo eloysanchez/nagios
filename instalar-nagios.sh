@@ -205,6 +205,7 @@ _EOF_
 instalar_prerrequisitos
 instalar_nagios
 instalar_plugins
+instalar_pnp4nagios
 instalar_nagiosql
 
 # Mostrar contraseña generada nagiosadmin
