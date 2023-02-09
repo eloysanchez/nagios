@@ -112,16 +112,14 @@ EOF
   # Generar configuracion a commands.cfg
   cp /usr/local/nagios/etc/objects/commands.cfg /usr/local/nagios/etc/objects/commands.cfg.bak
   cat << 'EOF' > commands_file.txt
-# Bulk mode
-#
-define command {
-command_name    process-service-perfdata-file
-command_line    /usr/local/pnp4nagios/libexec/process_perfdata.pl --bulk /usr/local/pnp4nagios/var/service-perfdata
+# Bulk with NPCD mode
+#define command {
+       command_name    process-service-perfdata-file
+       command_line    /bin/mv /usr/local/pnp4nagios/var/service-perfdata /usr/local/pnp4nagios/var/spool/service-perfdata.$TIMET$
 }
-
-define command {
-command_name    process-host-perfdata-file
-command_line    /usr/local/pnp4nagios/libexec/process_perfdata.pl --bulk /usr/local/pnp4nagios/var/host-perfdata
+#define command {
+       command_name    process-host-perfdata-file
+       command_line    /bin/mv /usr/local/pnp4nagios/var/host-perfdata /usr/local/pnp4nagios/var/spool/host-perfdata.$TIMET$
 }
 EOF
   cat commands_file.txt >> /usr/local/nagios/etc/objects/commands.cfg
@@ -162,6 +160,9 @@ EOF
   # Corregir error sizeof()
   cp /usr/local/pnp4nagios/share/application/models/data.php /usr/local/pnp4nagios/share/application/models/data.php.bak
   sed -i 's/if(sizeof(\$pages) > 0 ){/if(is_array(\$pages) \&\& sizeof(\$pages) > 0 ){/' /usr/local/pnp4nagios/share/application/models/data.php
+
+  # Reiniciar servicios
+  service apache2 restart && service nagios restart && service npcd restart
 }
 
 # Instalar NagiosQL
