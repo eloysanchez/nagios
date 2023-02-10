@@ -84,6 +84,15 @@ instalar_pnp4nagios () {
   service npcd status
   mv /usr/local/pnp4nagios/share/install.php /usr/local/pnp4nagios/share/install.php.bak
 
+  # Corregir error magic_quotes
+  cp /usr/local/pnp4nagios/lib/kohana/system/libraries/Input.php /usr/local/pnp4nagios/lib/kohana/system/libraries/Input.php.bak
+  sed -i '/magic_quotes_runtime is enabled/a /**' /usr/local/pnp4nagios/lib/kohana/system/libraries/Input.php
+  sed -i '/register_globals is enabled/i */' /usr/local/pnp4nagios/lib/kohana/system/libraries/Input.php
+
+  # Corregir error sizeof()
+  cp /usr/local/pnp4nagios/share/application/models/data.php /usr/local/pnp4nagios/share/application/models/data.php.bak
+  sed -i 's/if(sizeof(\$pages) > 0 ){/if(is_array(\$pages) \&\& sizeof(\$pages) > 0 ){/' /usr/local/pnp4nagios/share/application/models/data.php
+
   # Configurar process_performance
   cp /usr/local/nagios/etc/nagios.cfg /usr/local/nagios/etc/nagios.cfg.bak
   sed -i "s/process_performance_data=0/process_performance_data=1/g" /usr/local/nagios/etc/nagios.cfg
@@ -130,7 +139,7 @@ EOF
 # PNP4NAGIOS #
 define host {
 name          host-pnp
-action_url    /pnp4nagios/index.php/graph?host=$HOSTNAME$&srv=_HOST_' class='tips' rel='/pnp4nagios/index.php/popup?host=$HOSTNAME$&srv=_HOST 
+action_url    /pnp4nagios/index.php/graph?host=$HOSTNAME$&srv=_HOST_' class='tips' rel='/pnp4nagios/index.php/popup?host=$HOSTNAME$&srv=_HOST_ 
 register      0
 }
 define service {
@@ -152,14 +161,6 @@ jQuery(document).ready(function() {
 });
 </script>
 EOF
-
-  # Corregir error magic_quotes
-  cp /usr/local/pnp4nagios/lib/kohana/system/libraries/Input.php /usr/local/pnp4nagios/lib/kohana/system/libraries/Input.php.bak
-  sed -i '/magic_quotes_runtime is enabled/a /**' /usr/local/pnp4nagios/lib/kohana/system/libraries/Input.php
-  sed -i '/register_globals is enabled/i */' /usr/local/pnp4nagios/lib/kohana/system/libraries/Input.php
-  # Corregir error sizeof()
-  cp /usr/local/pnp4nagios/share/application/models/data.php /usr/local/pnp4nagios/share/application/models/data.php.bak
-  sed -i 's/if(sizeof(\$pages) > 0 ){/if(is_array(\$pages) \&\& sizeof(\$pages) > 0 ){/' /usr/local/pnp4nagios/share/application/models/data.php
 
   # Reiniciar servicios
   service apache2 restart && service nagios restart && service npcd restart
